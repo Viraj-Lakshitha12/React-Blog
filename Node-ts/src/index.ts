@@ -1,11 +1,13 @@
 import express from 'express'
 import e from "express";
 import bodyParser from "body-parser";
-import mongoose from "mongoose";
+import mongoose, {Schema, Types} from "mongoose";
 import UserModel from "./models/userModel";
 import userModel from "./models/userModel";
 import CustomResponse from "./dtos/customResponse";
 import ArticleModel from "./dtos/articleModel";
+import {ObjectId} from 'mongoose';
+
 
 let app = express();
 app.use(bodyParser.json());
@@ -99,7 +101,6 @@ app.post('/user/auth', async (req: express.Request, res: express.Response) => {
 
 app.post('/article', async (req: express.Request, res: express.Response) => {
     try {
-
         let req_body = req.body;
         const articleModel = new ArticleModel({
             title: req_body.title,
@@ -107,8 +108,13 @@ app.post('/article', async (req: express.Request, res: express.Response) => {
             user: req_body.user
         });
         const saveArticles = await articleModel.save();
-        new CustomResponse(200, "article saved successfully", saveArticles)
+
+        // Send a response back to the client
+        res.status(200).send(new CustomResponse(
+            200, "article saved successfully", saveArticles
+        ));
     } catch (error) {
-        new CustomResponse(100, "error")
+        // Send an error response back to the client
+        res.status(500).send(new CustomResponse(100, "error"));
     }
 });
