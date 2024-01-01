@@ -12,7 +12,7 @@ interface IArticles extends mongoose.Document {
 let articleSchema = new mongoose.Schema<IArticles>({
     title: {type: String, required: true},
     description: {type: String, required: true},
-    publishedDate: {type: String, required: true, default: Date.now()},
+    publishedDate: {type: Date, required: true, default: Date.now()},
     user: {type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User'},
 
 });
