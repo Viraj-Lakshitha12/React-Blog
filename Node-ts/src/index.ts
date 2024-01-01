@@ -3,6 +3,7 @@ import e from "express";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import UserModel from "./models/userModel";
+import userModel from "./models/userModel";
 
 let app = express();
 app.use(bodyParser.json());
@@ -29,8 +30,14 @@ app.listen(8080, () => {
     console.log("Server started 8080");
 });
 
-app.get('/user/all', (req: express.Request, res: express.Response) => {
-    res.send("all ok");
+app.get('/user/all', async (req: express.Request, res: express.Response) => {
+    try {
+        let users = await userModel.find();
+        res.status(200).send(users);
+    } catch (error) {
+        res.status(100).send("error");
+    }
+
 });
 //
 app.post('/user/save', async (req: express.Request, res: express.Response) => {
