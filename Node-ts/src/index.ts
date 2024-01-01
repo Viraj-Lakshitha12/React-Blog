@@ -31,6 +31,8 @@ app.listen(8080, () => {
     console.log("Server started 8080");
 });
 
+
+// get all users
 app.get('/user/all', async (req: express.Request, res: express.Response) => {
     try {
         let users = await userModel.find();
@@ -42,7 +44,8 @@ app.get('/user/all', async (req: express.Request, res: express.Response) => {
     }
 
 });
-//
+
+//save users
 app.post('/user/save', async (req: express.Request, res: express.Response) => {
     try {
         const req_body: any = req.body;
@@ -63,3 +66,29 @@ app.post('/user/save', async (req: express.Request, res: express.Response) => {
         res.status(500).send('Error: Unable to save user');
     }
 });
+
+app.post('/user/auth', async (req: express.Request, res: express.Response) => {
+    try {
+        const req_body = req.body;
+        let user = await UserModel.findOne({email: req_body.email});
+        if (user) {
+            if (user.password == req_body.password) {
+                res.status(200).send(new CustomResponse(
+                    200, "success login"
+                ))
+            } else {
+                res.status(401).send(new CustomResponse(
+                    401, "Invalid"
+                ))
+            }
+        } else {
+            res.status(401404).send(new CustomResponse(
+                404, "user not found"
+            ))
+        }
+
+
+    } catch (error) {
+        res.status(100).send(error);
+    }
+})
