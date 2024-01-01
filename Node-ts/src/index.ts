@@ -32,6 +32,9 @@ app.listen(8080, () => {
 });
 
 
+// ------------------------------------ user ------------------------------
+
+
 // get all users
 app.get('/user/all', async (req: express.Request, res: express.Response) => {
     try {
@@ -67,7 +70,9 @@ app.post('/user/save', async (req: express.Request, res: express.Response) => {
     }
 });
 
+//check email password
 app.post('/user/auth', async (req: express.Request, res: express.Response) => {
+
     try {
         const req_body = req.body;
         let user = await UserModel.findOne({email: req_body.email});
@@ -75,20 +80,22 @@ app.post('/user/auth', async (req: express.Request, res: express.Response) => {
             if (user.password == req_body.password) {
                 res.status(200).send(new CustomResponse(
                     200, "success login"
-                ))
+                ));
             } else {
-                res.status(401).send(new CustomResponse(
-                    401, "Invalid"
-                ))
+                res.status(401).send(new CustomResponse(401, "Invalid"));
             }
         } else {
-            res.status(401404).send(new CustomResponse(
-                404, "user not found"
-            ))
+            res.status(401404).send(new CustomResponse(404, "user not found"));
         }
-
 
     } catch (error) {
         res.status(100).send(error);
     }
 })
+
+
+// ---------------------------------------------- articles------------------------------------
+
+app.post('/article', (req: express.Request, res: express.Response) => {
+   
+});
