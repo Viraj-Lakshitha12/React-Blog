@@ -7,6 +7,7 @@ import userModel from "./models/userModel";
 import CustomResponse from "./dtos/customResponse";
 import ArticleModel from "./dtos/articleModel";
 import {ObjectId} from 'mongoose';
+import articleModel from "./dtos/articleModel";
 
 
 let app = express();
@@ -116,5 +117,16 @@ app.post('/article', async (req: express.Request, res: express.Response) => {
     } catch (error) {
         // Send an error response back to the client
         res.status(500).send(new CustomResponse(100, "error"));
+    }
+});
+
+app.get('/article', async (req: express.Request, res: express.Response) => {
+    try {
+        let allArticles = await articleModel.find();
+        res.status(200).send(new CustomResponse(
+            200, "find all articles", allArticles
+        ))
+    } catch (error) {
+        res.status(100).send("error");
     }
 });
