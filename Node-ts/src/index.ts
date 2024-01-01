@@ -8,7 +8,10 @@ import CustomResponse from "./dtos/customResponse";
 import ArticleModel from "./dtos/articleModel";
 import {ObjectId} from 'mongoose';
 import articleModel from "./dtos/articleModel";
+import dotenv from 'dotenv';
+import * as process from "process";
 
+dotenv.config();
 
 let app = express();
 app.use(bodyParser.json());
@@ -19,7 +22,7 @@ interface user {
     salary: string
 }
 
-mongoose.connect("mongodb://localhost/blog");
+mongoose.connect(process.env.MONGO_URL as string);
 const db = mongoose.connection
 
 db.on('error', (error) => {
