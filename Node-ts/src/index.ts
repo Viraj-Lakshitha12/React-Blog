@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import UserModel from "./models/userModel";
 import userModel from "./models/userModel";
+import CustomResponse from "./dtos/customResponse";
 
 let app = express();
 app.use(bodyParser.json());
@@ -33,7 +34,9 @@ app.listen(8080, () => {
 app.get('/user/all', async (req: express.Request, res: express.Response) => {
     try {
         let users = await userModel.find();
-        res.status(200).send(users);
+        res.status(200).send(new CustomResponse(
+            200, "find all users", users
+        ));
     } catch (error) {
         res.status(100).send("error");
     }
@@ -50,8 +53,11 @@ app.post('/user/save', async (req: express.Request, res: express.Response) => {
             email: req_body.email,
             password: req_body.password
         });
-        await userModel.save();
-        res.status(200).send('Success: User saved');
+        let saveUser = await userModel.save();
+        saveUser.password = "";
+        res.status(200).send(new CustomResponse(
+            200, "user saved successfully", saveUser
+        ));
     } catch (error) {
         console.error(error);
         res.status(500).send('Error: Unable to save user');

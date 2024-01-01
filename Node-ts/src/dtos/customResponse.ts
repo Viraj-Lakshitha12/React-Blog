@@ -1,9 +1,9 @@
-class CustomResponse {
+export default class CustomResponse {
     private _status: number;
     private _messsage: string;
     private _data: any;
 
-    constructor(status: number, messsage: string, data: any) {
+    constructor(status: number, messsage: string, data?: any) {
         this._status = status;
         this._messsage = messsage;
         this._data = data;
