@@ -129,10 +129,11 @@ app.get('/article', async (req: express.Request, res: express.Response) => {
 
 
         let allArticles = await articleModel.find().limit(size).skip(size * (page - 1));
-        res.status(200).send(new CustomResponse(
-            200, "find all articles", allArticles
-        ))
+
+        res.status(200).send(new CustomResponse(200, "find all articles", allArticles))
+
     } catch (error) {
         res.status(100).send("error");
     }
 });
+
