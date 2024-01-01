@@ -120,9 +120,15 @@ app.post('/article', async (req: express.Request, res: express.Response) => {
     }
 });
 
+//get all of articles
 app.get('/article', async (req: express.Request, res: express.Response) => {
     try {
-        let allArticles = await articleModel.find();
+        let req_query: any = req.query;
+        let size: number = req_query.size;
+        let page: number = req_query.page;
+
+
+        let allArticles = await articleModel.find().limit(size).skip(size * (page - 1));
         res.status(200).send(new CustomResponse(
             200, "find all articles", allArticles
         ))
