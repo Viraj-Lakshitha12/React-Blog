@@ -10,6 +10,7 @@ import {ObjectId} from 'mongoose';
 import articleModel from "./dtos/articleModel";
 import dotenv from 'dotenv';
 import * as process from "process";
+import jwt, {Secret} from 'jsonwebtoken'
 
 dotenv.config();
 
@@ -85,9 +86,25 @@ app.post('/user/auth', async (req: express.Request, res: express.Response) => {
         let user = await UserModel.findOne({email: req_body.email});
         if (user) {
             if (user.password == req_body.password) {
-                res.status(200).send(new CustomResponse(
-                    200, "success login"
-                ));
+
+                jwt.sign({user}, process.env.SECRET_KEY as Secret, (error: any, token: any) => {
+                    if (error) {
+                        res.status(100).send(new CustomResponse(
+                            100, "error"
+                        ));
+                    } else {
+                        let res_body = {
+                            user: user,
+                            accessToken: token
+                        }
+
+                        res.status(200).send(new CustomResponse(
+                            200, "Access",res_body
+                        ));
+                    }
+                })
+
+
             } else {
                 res.status(401).send(new CustomResponse(401, "Invalid"));
             }
