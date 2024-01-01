@@ -1,7 +1,7 @@
-import mongoose, {Schema, Types} from "mongoose";
-import ObjectId = module
+import mongoose, {ObjectId, Schema, Types} from "mongoose";
 
-interface myArticles extends mongoose.Document {
+
+interface IArticles extends mongoose.Document {
     title: string,
     description: string,
     publishedDate: Date,
@@ -9,7 +9,7 @@ interface myArticles extends mongoose.Document {
 }
 
 
-let articleSchema = new mongoose.Schema({
+let articleSchema = new mongoose.Schema<IArticles>({
     title: {type: String, required: true},
     description: {type: String, required: true},
     publishedDate: {type: String, required: true, default: Date.now()},
