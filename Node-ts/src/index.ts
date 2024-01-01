@@ -129,11 +129,31 @@ app.get('/article', async (req: express.Request, res: express.Response) => {
 
 
         let allArticles = await articleModel.find().limit(size).skip(size * (page - 1));
+        let DocumentCount = await articleModel.countDocuments();
+        let pageCount = Math.ceil(DocumentCount / size);
 
-        res.status(200).send(new CustomResponse(200, "find all articles", allArticles))
+        res.status(200).send(new CustomResponse(200, "find all articles", allArticles, pageCount))
 
     } catch (error) {
         res.status(100).send("error");
     }
 });
 
+app.get('/article/:username', async (req: express.Request, res: express.Response) => {
+    let username: string = req.params.username
+    let req_query: any = req.query;
+
+    let user = await UserModel.findOne({username: username});
+    let size: number = req_query.size;
+    let page: number = req_query.page;
+
+    let countDocument: number = await articleModel.countDocuments();
+    let pageCount: number = Math.ceil(countDocument / size);
+    if (!user) {
+        res.status(404).send(new CustomResponse(404, 'user not found'))
+    } else {
+        let articles = await articleModel.find({user: user.id}).limit(size).skip(size * (pageCount - 1));
+        res.status(200).send(new CustomResponse(200, 'articles are found', articles, pageCount))
+
+    }
+});

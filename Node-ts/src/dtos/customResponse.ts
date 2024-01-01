@@ -1,14 +1,23 @@
 export default class CustomResponse {
+    get totalPages(): any {
+        return this._totalPages;
+    }
+
+    set totalPages(value: any) {
+        this._totalPages = value;
+    }
     private _status: number;
     private _messsage: string;
-    private _data: any;
+    private _data?: any;
+    private _totalPages?:any;
 
-    constructor(status: number, messsage: string, data?: any) {
+
+    constructor(status: number, messsage: string, data?: any, totalPages?: any) {
         this._status = status;
         this._messsage = messsage;
         this._data = data;
+        this._totalPages = totalPages;
     }
-
 
     get status(): number {
         return this._status;
@@ -38,7 +47,8 @@ export default class CustomResponse {
         return {
             status: this._status,
             message: this._messsage,
-            data: this._data
+            data: this._data,
+            totalPages: this.totalPages
         }
 
     }
