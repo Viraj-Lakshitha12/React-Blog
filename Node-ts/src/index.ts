@@ -220,3 +220,21 @@ app.get('/article/:username', async (req: express.Request, res: express.Response
 
     }
 });
+
+// update articles
+app.put('/article', verifyToken, async (req: express.Request, res: any) => {
+    try {
+        let req_body = req.body;
+        let user_id = res.tokenData.user._id;
+        let article: any = await articleModel.find({_id: req_body.id}, {user: user_id})
+
+        if (article) {
+            console.log(article);
+        } else {
+            console.log("error");
+        }
+
+    } catch (error) {
+        res.status(100).send("error");
+    }
+});
