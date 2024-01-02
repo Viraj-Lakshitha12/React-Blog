@@ -86,8 +86,8 @@ app.post('/user/auth', async (req: express.Request, res: express.Response) => {
         let user = await UserModel.findOne({email: req_body.email});
         if (user) {
             if (user.password == req_body.password) {
-
-                jwt.sign({user}, process.env.SECRET_KEY as Secret, (error: any, token: any) => {
+                const expiresIn = '1w'
+                jwt.sign({user}, process.env.SECRET_KEY as Secret, {expiresIn}, (error: any, token: any) => {
                     if (error) {
                         res.status(100).send(new CustomResponse(
                             100, "error"
@@ -99,7 +99,7 @@ app.post('/user/auth', async (req: express.Request, res: express.Response) => {
                         }
 
                         res.status(200).send(new CustomResponse(
-                            200, "Access",res_body
+                            200, "Access", res_body
                         ));
                     }
                 })
