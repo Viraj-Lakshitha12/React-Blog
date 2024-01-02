@@ -221,7 +221,7 @@ app.get('/article/:username', async (req: express.Request, res: express.Response
     }
 });
 
-// update articles
+// update articles by user id
 app.put('/article', verifyToken, async (req: express.Request, res: any) => {
     try {
         let req_body = req.body;
@@ -241,6 +241,24 @@ app.put('/article', verifyToken, async (req: express.Request, res: any) => {
             console.log("error");
         }
 
+    } catch (error) {
+        res.status(100).send("error");
+    }
+});
+
+// delete article
+app.delete('/article/:id', verifyToken, async (req: express.Request, res: any) => {
+    try {
+        let articleId: any = req.params.id;
+        let user_id: any = res.tokenData.user._id;
+
+        let article = await articleModel.find({_id: articleId, user: user_id});
+        if (article) {
+            await articleModel.deleteOne({_id: articleId});
+            res.status(200).send(new CustomResponse(200, "Success delete"));
+        } else {
+            res.status(401).send("Cant access");
+        }
     } catch (error) {
         res.status(100).send("error");
     }
