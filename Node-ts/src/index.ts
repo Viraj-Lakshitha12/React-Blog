@@ -78,6 +78,7 @@ app.post('/user/save', async (req: express.Request, res: express.Response) => {
     }
 });
 
+//Token verify
 const verifyToken = (req: express.Request, res: any, next: express.NextFunction) => {
     const token = req.headers.authorization;
 
