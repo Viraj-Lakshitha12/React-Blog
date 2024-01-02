@@ -226,16 +226,16 @@ app.put('/article', verifyToken, async (req: express.Request, res: any) => {
     try {
         let req_body = req.body;
         let user_id = res.tokenData.user._id;
-        let article: any = await articleModel.find({_id: req_body.id}, {user: user_id})
+        let article: any = await articleModel.find({_id: req_body.id, user: user_id})
 
         if (article) {
-            articleModel.findOneAndUpdate({_id: req_body.id}, {
+            await articleModel.findOneAndUpdate({_id: req_body.id}, {
                 title: req_body.title,
                 description: req_body.description
             }).then(r => {
-                res.status(200).send("update successfully");
+                res.status(200).send(new CustomResponse(200, "update article"));
             }).catch(e => {
-                res.send(100).send("error");
+                res.status(100).send("error");
             })
         } else {
             console.log("error");
