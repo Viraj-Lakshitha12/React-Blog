@@ -229,7 +229,14 @@ app.put('/article', verifyToken, async (req: express.Request, res: any) => {
         let article: any = await articleModel.find({_id: req_body.id}, {user: user_id})
 
         if (article) {
-            console.log(article);
+            articleModel.findOneAndUpdate({_id: req_body.id}, {
+                title: req_body.title,
+                description: req_body.description
+            }).then(r => {
+                res.status(200).send("update successfully");
+            }).catch(e => {
+                res.send(100).send("error");
+            })
         } else {
             console.log("error");
         }
