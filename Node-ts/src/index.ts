@@ -78,6 +78,26 @@ app.post('/user/save', async (req: express.Request, res: express.Response) => {
     }
 });
 
+const verifyToken = (req: express.Request, res: any, next: express.NextFunction) => {
+    const token = req.headers.authorization;
+
+    if (!token) {
+        return res.status(401).json("Invalid token");
+    }
+    try {
+        const data: any = jwt.verify(token, process.env.SECRET_KEY as Secret);
+        console.log('Decoded Token:', data);
+        res.tokenData = data;
+        next();
+    } catch (error) {
+        console.error('Token Verification Error:', error);
+        return res.status(401).json('Invalid token');
+    }
+
+
+}
+
+
 //check email password
 app.post('/user/auth', async (req: express.Request, res: express.Response) => {
 
@@ -120,7 +140,7 @@ app.post('/user/auth', async (req: express.Request, res: express.Response) => {
 
 // ---------------------------------------------- articles------------------------------------
 
-app.post('/article', async (req: express.Request, res: express.Response) => {
+app.post('/article', verifyToken, async (req: express.Request, res: express.Response) => {
     try {
         let req_body = req.body;
         const articleModel = new ArticleModel({
@@ -159,6 +179,7 @@ app.get('/article', async (req: express.Request, res: express.Response) => {
     }
 });
 
+//get all articles by username
 app.get('/article/:username', async (req: express.Request, res: express.Response) => {
     let username: string = req.params.username
     let req_query: any = req.query;
