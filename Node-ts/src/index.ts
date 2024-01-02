@@ -145,8 +145,8 @@ app.get('/articles/get/my', verifyToken, async (req: express.Request, res: any) 
     try {
 
         let req_query: any = req.query;
-        let size = req_query.size;
-        let page = req_query.page;
+        let size: number = req_query.size;
+        let page: number = req_query.page;
 
         let user_id = res.tokenData.user._id;
 
