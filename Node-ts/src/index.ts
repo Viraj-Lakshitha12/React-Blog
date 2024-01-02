@@ -87,7 +87,6 @@ const verifyToken = (req: express.Request, res: any, next: express.NextFunction)
     }
     try {
         const data: any = jwt.verify(token, process.env.SECRET_KEY as Secret);
-        console.log('Decoded Token:', data);
         res.tokenData = data;
         next();
     } catch (error) {
@@ -141,6 +140,20 @@ app.post('/user/auth', async (req: express.Request, res: express.Response) => {
 
 // ---------------------------------------------- articles------------------------------------
 
+// my articles by userid
+app.get('/articles/get/my', verifyToken, async (req: express.Request, res: any) => {
+    try {
+        let user_id = res.tokenData.user._id;
+        console.log(user_id)
+        let userArticles: any = await articleModel.find({user: user_id});
+        res.status(200).send(new CustomResponse(200, "find articles", userArticles));
+    } catch (error) {
+        res.status(100).send("error");
+    }
+})
+
+
+// save articles
 app.post('/article', verifyToken, async (req: express.Request, res: express.Response) => {
     try {
         let req_body = req.body;
