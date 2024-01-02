@@ -143,10 +143,18 @@ app.post('/user/auth', async (req: express.Request, res: express.Response) => {
 // my articles by userid
 app.get('/articles/get/my', verifyToken, async (req: express.Request, res: any) => {
     try {
+
+        let req_query: any = req.query;
+        let size = req_query.size;
+        let page = req_query.page;
+
         let user_id = res.tokenData.user._id;
-        console.log(user_id)
-        let userArticles: any = await articleModel.find({user: user_id});
-        res.status(200).send(new CustomResponse(200, "find articles", userArticles));
+
+        let countDocument: number = await articleModel.countDocuments();
+        let pageCount: number = Math.ceil(countDocument / size);
+
+        let userArticles: any = await articleModel.find({user: user_id}).limit(size).skip(size * (page - 1));
+        res.status(200).send(new CustomResponse(200, "find articles", userArticles, pageCount));
     } catch (error) {
         res.status(100).send("error");
     }
