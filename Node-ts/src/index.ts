@@ -254,10 +254,13 @@ app.delete('/article/:id', verifyToken, async (req: express.Request, res: any) =
 
         let article = await articleModel.find({_id: articleId, user: user_id});
         if (article) {
-            await articleModel.deleteOne({_id: articleId});
-            res.status(200).send(new CustomResponse(200, "Success delete"));
+            res.status(200).send(new CustomResponse(200, "article is delete Successfully"));
+            await articleModel.deleteOne({_id: articleId}).then(r => {
+            }).catch(e => {
+                res.status(401).send(new CustomResponse(401, "cant access"));
+            })
         } else {
-            res.status(401).send("Cant access");
+            res.status(404).send(new CustomResponse(404, "article not found"));
         }
     } catch (error) {
         res.status(100).send("error");
