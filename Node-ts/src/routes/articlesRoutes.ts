@@ -1,16 +1,13 @@
-// my articles by userid
+
 import express, {Router} from "express";
-import articleModel from "../dtos/articleModel";
-import CustomResponse from "../dtos/customResponse";
-import ArticleModel from "../dtos/articleModel";
-import UserModel from "../models/userModel";
+
 import {verifyToken} from "../middlewares";
 import * as ArticleController from "../controllers/articleController";
 
 
 let router: Router = express.Router();
 
-//get my articles
+//get my articles by userId
 router.get('/get/my', verifyToken, ArticleController.getMyArticles);
 
 // save articles
