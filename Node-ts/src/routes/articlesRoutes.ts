@@ -1,6 +1,4 @@
-
 import express, {Router} from "express";
-
 import {verifyToken} from "../middlewares";
 import * as ArticleController from "../controllers/articleController";
 

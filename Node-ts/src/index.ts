@@ -3,7 +3,6 @@ import bodyParser from "body-parser";
 import mongoose, {Schema, Types} from "mongoose";
 import dotenv from 'dotenv';
 import * as process from "process";
-
 import UserRoutes from "./routes/userRoutes";
 import ArticlesRoutes from "./routes/articlesRoutes";
 
@@ -28,8 +27,6 @@ db.on('error', (error) => {
 db.on('open', () => {
     console.log("DB OK");
 })
-
-let allUsers: user[] = [];
 app.listen(8080, () => {
     console.log("Server started 8080");
 });
@@ -38,5 +35,5 @@ app.listen(8080, () => {
 // ------------------------------------ user ------------------------------
 app.use('/user', UserRoutes);
 
-// ---------------------------------------------- articles------------------------------------
+// ----------------------------------- articles------------------------------------
 app.use('/article', ArticlesRoutes);
