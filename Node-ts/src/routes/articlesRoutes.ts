@@ -4,29 +4,12 @@ import articleModel from "../dtos/articleModel";
 import CustomResponse from "../dtos/customResponse";
 import ArticleModel from "../dtos/articleModel";
 import UserModel from "../models/userModel";
-import jwt, {Secret} from "jsonwebtoken";
+import {verifyToken} from "../middlewares";
+
 
 let router: Router = express.Router();
 
 
-//Token verify
-const verifyToken = (req: express.Request, res: any, next: express.NextFunction) => {
-    const token = req.headers.authorization;
-
-    if (!token) {
-        return res.status(401).json("Invalid token");
-    }
-    try {
-        const data: any = jwt.verify(token, process.env.SECRET_KEY as Secret);
-        res.tokenData = data;
-        next();
-    } catch (error) {
-        console.error('Token Verification Error:', error);
-        return res.status(401).json('Invalid token');
-    }
-
-
-}
 
 router.get('/get/my', verifyToken, async (req: express.Request, res: any) => {
     try {
