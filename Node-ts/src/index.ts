@@ -11,6 +11,7 @@ import articleModel from "./dtos/articleModel";
 import dotenv from 'dotenv';
 import * as process from "process";
 import jwt, {Secret} from 'jsonwebtoken'
+import UserRoutes from "./routes/userRoutes";
 
 dotenv.config();
 
@@ -42,41 +43,8 @@ app.listen(8080, () => {
 
 // ------------------------------------ user ------------------------------
 
+app.use('/user', UserRoutes)
 
-// get all users
-app.get('/user/all', async (req: express.Request, res: express.Response) => {
-    try {
-        let users = await userModel.find();
-        res.status(200).send(new CustomResponse(
-            200, "find all users", users
-        ));
-    } catch (error) {
-        res.status(100).send("error");
-    }
-
-});
-
-//save users
-app.post('/user/save', async (req: express.Request, res: express.Response) => {
-    try {
-        const req_body: any = req.body;
-        const userModel = new UserModel({
-            username: req_body.username,
-            f_name: req_body.f_name,
-            l_name: req_body.l_name,
-            email: req_body.email,
-            password: req_body.password
-        });
-        let saveUser = await userModel.save();
-        saveUser.password = "";
-        res.status(200).send(new CustomResponse(
-            200, "user saved successfully", saveUser
-        ));
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error: Unable to save user');
-    }
-});
 
 //Token verify
 const verifyToken = (req: express.Request, res: any, next: express.NextFunction) => {
@@ -96,46 +64,6 @@ const verifyToken = (req: express.Request, res: any, next: express.NextFunction)
 
 
 }
-
-
-//check email password
-app.post('/user/auth', async (req: express.Request, res: express.Response) => {
-
-    try {
-        const req_body = req.body;
-        let user = await UserModel.findOne({email: req_body.email});
-        if (user) {
-            if (user.password == req_body.password) {
-                const expiresIn = '1w'
-                jwt.sign({user}, process.env.SECRET_KEY as Secret, {expiresIn}, (error: any, token: any) => {
-                    if (error) {
-                        res.status(100).send(new CustomResponse(
-                            100, "error"
-                        ));
-                    } else {
-                        let res_body = {
-                            user: user,
-                            accessToken: token
-                        }
-
-                        res.status(200).send(new CustomResponse(
-                            200, "Access", res_body
-                        ));
-                    }
-                })
-
-
-            } else {
-                res.status(401).send(new CustomResponse(401, "Invalid"));
-            }
-        } else {
-            res.status(401404).send(new CustomResponse(404, "user not found"));
-        }
-
-    } catch (error) {
-        res.status(100).send(error);
-    }
-})
 
 
 // ---------------------------------------------- articles------------------------------------
