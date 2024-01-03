@@ -4,6 +4,7 @@ import CustomResponse from "../dtos/customResponse";
 import UserModel from "../models/userModel";
 import jwt, {Secret} from "jsonwebtoken";
 import process from "process";
+import bcrypt from "bcryptjs";
 
 // get all users
 export const getAllUsers = async (req: express.Request, res: express.Response) => {
@@ -22,18 +23,25 @@ export const getAllUsers = async (req: express.Request, res: express.Response) =
 export const saveUser = async (req: express.Request, res: express.Response) => {
     try {
         const req_body: any = req.body;
-        const userModel = new UserModel({
-            username: req_body.username,
-            f_name: req_body.f_name,
-            l_name: req_body.l_name,
-            email: req_body.email,
-            password: req_body.password
-        });
-        let saveUser = await userModel.save();
-        saveUser.password = "";
-        res.status(200).send(new CustomResponse(
-            200, "user saved successfully", saveUser
-        ));
+
+        bcrypt.hash(req_body.password, 8, async function (err, hash) {
+            if (err) {
+                res.status(100).send(new CustomResponse(100, "something went wrong"));
+            }
+            const userModel = new UserModel({
+                username: req_body.username,
+                f_name: req_body.f_name,
+                l_name: req_body.l_name,
+                email: req_body.email,
+                password: hash
+            });
+            let saveUser = await userModel.save();
+            saveUser.password = "";
+            res.status(200).send(new CustomResponse(
+                200, "user saved successfully", saveUser
+            ));
+        })
+
     } catch (error) {
         console.error(error);
         res.status(500).send('Error: Unable to save user');
@@ -47,8 +55,11 @@ export const userAuth = async (req: express.Request, res: express.Response) => {
         const req_body = req.body;
         let user = await UserModel.findOne({email: req_body.email});
         if (user) {
-            if (user.password == req_body.password) {
+            let isMatch:boolean = await bcrypt.compare(req_body.password, user.password);
+
+            if (isMatch) {
                 const expiresIn = '1w'
+
                 jwt.sign({user}, process.env.SECRET_KEY as Secret, {expiresIn}, (error: any, token: any) => {
                     if (error) {
                         res.status(100).send(new CustomResponse(
