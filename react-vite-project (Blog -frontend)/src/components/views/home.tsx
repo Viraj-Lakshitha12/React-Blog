@@ -21,7 +21,6 @@ function Home(): JSX.Element {
 
     useEffect(() => {
         fetchData();
-        console.log("Called");
     }, []);
 
     return (
