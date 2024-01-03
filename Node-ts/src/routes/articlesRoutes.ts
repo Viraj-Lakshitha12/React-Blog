@@ -10,10 +10,8 @@ import {verifyToken} from "../middlewares";
 let router: Router = express.Router();
 
 
-
 router.get('/get/my', verifyToken, async (req: express.Request, res: any) => {
     try {
-
         let req_query: any = req.query;
         let size: number = req_query.size;
         let page: number = req_query.page;
