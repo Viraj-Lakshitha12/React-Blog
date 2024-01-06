@@ -29,7 +29,7 @@ db.on('open', () => {
     console.log("DB OK");
 })
 app.listen(8080, () => {
-    console.log("Server started 8080");
+    console.log("Server started 8081");
 });
 app.use(cors({origin:'*'}))
 
