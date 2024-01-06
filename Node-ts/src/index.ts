@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import * as process from "process";
 import UserRoutes from "./routes/userRoutes";
 import ArticlesRoutes from "./routes/articlesRoutes";
+import cors from "cors";
 
 dotenv.config();
 
@@ -30,7 +31,7 @@ db.on('open', () => {
 app.listen(8080, () => {
     console.log("Server started 8080");
 });
-
+app.use(cors({origin:'*'}))
 
 // ------------------------------------ user ------------------------------
 app.use('/user', UserRoutes);

@@ -40,7 +40,8 @@ export const getAllArticles = async (req: express.Request, res: express.Response
         res.status(200).send(new CustomResponse(200, "find all articles", allArticles, pageCount))
 
     } catch (error) {
-        res.status(100).send("error");
+        console.error(error);
+        res.status(500).send(new CustomResponse(500, "Internal server error", null));
     }
 };
 
